@@ -1,0 +1,43 @@
+{
+  "__version__": "3.0.3",
+  "game": {
+    "app_id": "663531722",
+    "c_id": "6863",
+    "name": "test"
+  },
+  "appConfigMaps": [
+    {
+      "app_id": "UNKNOW",
+      "config_id": "abc6bc"
+    },
+    {
+      "app_id": "663531722",
+      "config_id": "6c0ae0"
+    }
+  ],
+  "configs": [
+    {
+      "app_id": "UNKNOW",
+      "config_id": "abc6bc",
+      "config_name": "Default",
+      "config_remarks": "",
+      "services": []
+    },
+    {
+      "app_id": "663531722",
+      "config_id": "6c0ae0",
+      "config_name": "Default",
+      "config_remarks": "",
+      "services": [
+        {
+          "service_id": "235",
+          "enable": false,
+          "param": {
+            "app_id": "663531722",
+            "store_id": "Android"
+          }
+        }
+      ]
+    }
+  ]
+}
