@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Label, random } from 'cc';
+import { _decorator, Component, Node, Label, random, math } from 'cc';
 const { ccclass, property } = _decorator;
 
 class ProblemAnswer {
@@ -30,11 +30,12 @@ export class jiakao3 extends Component {
 
     delta: number = 0;
     lastUpdate: number = 0;
-    pos: number = 0;
+    pos: number = -1;
 
     state: GAME_STATE = GAME_STATE.PROBLEM;
 
     problemsAnswers = new Array<ProblemAnswer>;
+    randPos = new Array<number>;
 
     start() {
         this.delta = 0;
@@ -55,6 +56,10 @@ export class jiakao3 extends Component {
         this.problemsAnswers.push(new ProblemAnswer("夜间在照明不良的道路上行驶", "远光灯"));
 
         this.problemsAnswers.push(new ProblemAnswer("路边临时停车", "示阔灯+危险报警闪光灯"));
+
+        for (let i = 0; i < this.problemsAnswers.length; i++) {
+            this.randPos.push(i);
+        }
 
         /*
     tips.push_back({"同方向近距离跟车行驶", "近光灯"});
@@ -82,25 +87,47 @@ export class jiakao3 extends Component {
         const updateDiff = 1;
         // console.log("update deltaTime:" + deltaTime + " delta:" + this.delta + " lastUpdate:" + this.lastUpdate + " diff:" + diff);
         if (diff > updateDiff) {
-            this.doRand();
+            this.doUpdate1s();
             this.lastUpdate += updateDiff;
         }
     }
 
-    doRand() {
-        console.log("doRand this.lastUpdate:" + this.lastUpdate + " length:" + this.problemsAnswers.length);
+    updateProblem(pos: number) {
+        console.log("pos:" + pos);
+        this.lbl_problem.string = this.problemsAnswers[pos].problem;
+        this.lbl_answer.string = "";
+    }
 
+    updateAnswer(pos: number) {
+        console.log("pos:" + pos);
+        this.lbl_answer.string = this.problemsAnswers[pos].answer;
+    }
+
+    reRand() {
+        console.log("reRand pos:" + this.pos);
+        this.pos = 0;
+        for (let i = 0; i < this.randPos.length; i++) {
+            let rd = Math.floor(Math.random() * this.randPos.length);
+            let tmp = this.randPos[i];
+            this.randPos[i] = this.randPos[rd];
+            this.randPos[rd] = tmp;
+        }
+    }
+
+    doUpdate1s() {
+        console.log("doUpdate1s this.lastUpdate:" + this.lastUpdate + " length:" + this.problemsAnswers.length);
+
+        if (this.pos < 0 || this.pos >= this.problemsAnswers.length) {
+            this.reRand();
+        }
 
         if (this.lastUpdate % (PROBLEM_TIME + ANSWER_TIME) === 0) {
-            this.pos = Math.floor(random() * this.problemsAnswers.length);
-            console.log("rd:" + this.pos);
-
-            this.lbl_problem.string = this.problemsAnswers[this.pos].problem;
-            this.lbl_answer.string = "";
+            this.updateProblem(this.randPos[this.pos]);
             return;
         }
         if (this.lastUpdate % (PROBLEM_TIME + ANSWER_TIME) === PROBLEM_TIME) {
-            this.lbl_answer.string = this.problemsAnswers[this.pos].answer;
+            this.updateAnswer(this.randPos[this.pos]);
+            this.pos++;
             return;
         }
     }
